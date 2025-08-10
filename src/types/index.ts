@@ -39,6 +39,7 @@ export type FilmRole =
   | 'Acting Trainer'
   | 'Makeup Artist'
   | 'Infrastructure Provider'
+  | 'Script Writer'
   | 'Other';
 
 export type PricingPlan = 'free' | 'silver' | 'gold';

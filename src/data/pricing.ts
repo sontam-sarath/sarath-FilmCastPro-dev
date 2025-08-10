@@ -61,5 +61,6 @@ export const filmRoles = [
   'Acting Trainer',
   'Makeup Artist',
   'Infrastructure Provider',
+  'Script Writer',
   'Other'
 ] as const;

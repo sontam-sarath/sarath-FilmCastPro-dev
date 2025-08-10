@@ -31,7 +31,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onPageChange }) => {
 
   const roles = [
     'Producers', 'Directors', 'Musicians', 'Actors', 'VFX Artists', 'Cameramen',
-    'Costume Designers', 'Makeup Artists', 'Lighting Technicians', 'Acting Trainers'
+    'Costume Designers', 'Makeup Artists', 'Lighting Technicians', 'Acting Trainers', 'Script Writers'
   ];
 
   return (
