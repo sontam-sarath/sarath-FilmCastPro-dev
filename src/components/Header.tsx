@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Film, Menu, X, User, Search } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 
 interface HeaderProps {
   currentPage: string;
@@ -8,6 +9,7 @@ interface HeaderProps {
 
 export const Header: React.FC<HeaderProps> = ({ currentPage, onPageChange }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { user, signOut } = useAuth();
 
   const navItems = [
     { id: 'home', label: 'Home' },
@@ -54,18 +56,44 @@ export const Header: React.FC<HeaderProps> = ({ currentPage, onPageChange }) => 
             >
               <Search className="h-5 w-5" />
             </button>
-            <button 
-              onClick={() => onPageChange('login')}
-              className="text-gray-300 hover:text-white px-3 py-2 text-sm font-medium transition-colors"
-            >
-              Sign In
-            </button>
-            <button 
-              onClick={() => onPageChange('register')}
-              className="bg-yellow-400 text-gray-900 px-4 py-2 rounded-lg text-sm font-medium hover:bg-yellow-300 transition-colors"
-            >
-              Get Started
-            </button>
+            {user ? (
+              <>
+                <button
+                  onClick={() => onPageChange('dashboard')}
+                  className={`px-3 py-2 text-sm font-medium transition-colors ${
+                    currentPage === 'dashboard'
+                      ? 'text-yellow-400 border-b-2 border-yellow-400'
+                      : 'text-gray-300 hover:text-white'
+                  }`}
+                >
+                  Dashboard
+                </button>
+                <button
+                  onClick={async () => {
+                    await signOut();
+                    onPageChange('home');
+                  }}
+                  className="text-gray-300 hover:text-white px-3 py-2 text-sm font-medium transition-colors"
+                >
+                  Sign Out
+                </button>
+              </>
+            ) : (
+              <>
+                <button 
+                  onClick={() => onPageChange('login')}
+                  className="text-gray-300 hover:text-white px-3 py-2 text-sm font-medium transition-colors"
+                >
+                  Sign In
+                </button>
+                <button 
+                  onClick={() => onPageChange('register')}
+                  className="bg-yellow-400 text-gray-900 px-4 py-2 rounded-lg text-sm font-medium hover:bg-yellow-300 transition-colors"
+                >
+                  Get Started
+                </button>
+              </>
+            )}
           </div>
 
           {/* Mobile menu button */}
@@ -100,24 +128,50 @@ export const Header: React.FC<HeaderProps> = ({ currentPage, onPageChange }) => 
                 </button>
               ))}
               <div className="border-t border-gray-800 pt-2 mt-2">
-                <button 
-                  onClick={() => {
-                    onPageChange('login');
-                    setIsMenuOpen(false);
-                  }}
-                  className="block w-full text-left px-3 py-2 text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-800 transition-colors"
-                >
-                  Sign In
-                </button>
-                <button 
-                  onClick={() => {
-                    onPageChange('register');
-                    setIsMenuOpen(false);
-                  }}
-                  className="block w-full text-left px-3 py-2 text-sm font-medium bg-yellow-400 text-gray-900 hover:bg-yellow-300 transition-colors rounded-lg mt-2"
-                >
-                  Get Started
-                </button>
+                {user ? (
+                  <>
+                    <button
+                      onClick={() => {
+                        onPageChange('dashboard');
+                        setIsMenuOpen(false);
+                      }}
+                      className="block w-full text-left px-3 py-2 text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-800 transition-colors"
+                    >
+                      Dashboard
+                    </button>
+                    <button
+                      onClick={async () => {
+                        await signOut();
+                        setIsMenuOpen(false);
+                        onPageChange('home');
+                      }}
+                      className="block w-full text-left px-3 py-2 text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-800 transition-colors mt-2"
+                    >
+                      Sign Out
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <button 
+                      onClick={() => {
+                        onPageChange('login');
+                        setIsMenuOpen(false);
+                      }}
+                      className="block w-full text-left px-3 py-2 text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-800 transition-colors"
+                    >
+                      Sign In
+                    </button>
+                    <button 
+                      onClick={() => {
+                        onPageChange('register');
+                        setIsMenuOpen(false);
+                      }}
+                      className="block w-full text-left px-3 py-2 text-sm font-medium bg-yellow-400 text-gray-900 hover:bg-yellow-300 transition-colors rounded-lg mt-2"
+                    >
+                      Get Started
+                    </button>
+                  </>
+                )}
               </div>
             </div>
           </div>
