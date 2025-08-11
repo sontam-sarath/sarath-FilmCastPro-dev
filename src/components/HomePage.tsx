@@ -1,5 +1,5 @@
 import React from 'react';
-import { Star, Users, Camera, Award, ArrowRight } from 'lucide-react';
+import { Star, Users, Camera, Award, ArrowRight, Facebook, Twitter, Instagram, Linkedin, MapPin, Phone } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 interface HomePageProps {
@@ -153,25 +153,56 @@ export const HomePage: React.FC<HomePageProps> = ({ onPageChange }) => {
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-r from-yellow-400 to-orange-400">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
-            Ready to Take Your Career to the Next Level?
-          </h2>
-          <p className="text-gray-800 text-lg mb-8">
-            Join thousands of film professionals who are already building their careers with FilmCast Pro.
-          </p>
-          {!user && (
+      {/* Footer / CTA Section */}
+      {!user ? (
+        <section className="py-20 bg-gradient-to-r from-yellow-400 to-orange-400">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
+              Ready to Take Your Career to the Next Level?
+            </h2>
+            <p className="text-gray-800 text-lg mb-8">
+              Join thousands of film professionals who are already building their careers with FilmCast Pro.
+            </p>
             <button 
               onClick={() => onPageChange('register')}
               className="bg-gray-900 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-gray-800 transition-all transform hover:scale-105"
             >
               Create Your Profile Today
             </button>
-          )}
-        </div>
-      </section>
+          </div>
+        </section>
+      ) : (
+        <footer className="py-12 bg-gray-900 border-t border-gray-800">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex flex-col items-center gap-6">
+              <div className="flex items-center gap-4">
+                <a href="#" aria-label="Facebook" className="text-gray-400 hover:text-white transition-colors">
+                  <Facebook className="h-6 w-6" />
+                </a>
+                <a href="#" aria-label="Twitter" className="text-gray-400 hover:text-white transition-colors">
+                  <Twitter className="h-6 w-6" />
+                </a>
+                <a href="#" aria-label="Instagram" className="text-gray-400 hover:text-white transition-colors">
+                  <Instagram className="h-6 w-6" />
+                </a>
+                <a href="#" aria-label="LinkedIn" className="text-gray-400 hover:text-white transition-colors">
+                  <Linkedin className="h-6 w-6" />
+                </a>
+              </div>
+              <div className="text-gray-300 flex flex-col items-center gap-2">
+                <div className="flex items-center gap-2">
+                  <MapPin className="h-5 w-5 text-yellow-400" />
+                  <span>Vizag, India</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Phone className="h-5 w-5 text-yellow-400" />
+                  <a href="tel:+917671801206" className="hover:text-white transition-colors">+91 76718 01206</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </footer>
+      )}
     </div>
   );
 };
