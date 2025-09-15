@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Mail, Lock, Film } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { supabase } from '../lib/supabaseClient';
 
 interface LoginPageProps {
   onPageChange: (page: string) => void;
@@ -33,6 +34,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onPageChange }) => {
     }
     onPageChange('dashboard');
   };
+
 
   return (
     <div className="min-h-screen bg-gray-900 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">

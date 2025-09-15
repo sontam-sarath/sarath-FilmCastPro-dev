@@ -64,6 +64,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       plan: string;
       role: string;
     }) => {
+      console.log(formData);
     const { data,error } = await supabase.auth.signUp({ 
       email:formData.email, 
       password: formData.password 
@@ -75,6 +76,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     });
     if (signInError) return { error: signInError.message };
        const userId = signInData.user?.id;
+       
       await supabase.from("profiles").insert([
       {
         user_id: userId,
@@ -93,12 +95,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const signInWithGoogle = async () => {
-    const { error } = await supabase.auth.signInWithOAuth({
+    const { data,error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
         redirectTo: siteUrl,
       },
     });
+    console.log(data);
     if (error) return { error: error.message };
     return {};
   };

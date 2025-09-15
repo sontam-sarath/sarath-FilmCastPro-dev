@@ -7,3 +7,13 @@
     margin: 270px;
   }
 }
+.custom-dropdown {
+  /* This might not work directly on all browsers */
+  /* This is a more generalized approach */
+  max-height: 150px;
+  overflow-y: auto;
+}
+.form-select-tiny .form-select-tiny-options {
+  max-height: 150px; /* Adjust this value as needed */
+  overflow-y: auto;
+}

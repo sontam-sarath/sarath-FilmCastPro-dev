@@ -1,13 +1,72 @@
-import React from 'react';
-import { Star, Users, Camera, Award, ArrowRight, Facebook, Twitter, Instagram, Linkedin, MapPin, Phone } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { 
+  Star, Users, Camera, Award, ArrowRight, 
+  Facebook, Twitter, Instagram, Linkedin, MapPin, Phone,
+  ChevronLeft, ChevronRight
+} from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import '../HomePage.css';
+
 interface HomePageProps {
   onPageChange: (page: string) => void;
 }
 
+const videoSlides = [
+  {
+    url: "https://www.youtube.com/embed/-yXCPQGrMIc?si=BHFCMoMX0qkAryGN&autoplay=1&mute=1"
+  },
+  {
+    url: "https://www.youtube.com/embed/ggJg6CcKtZE?si=rrYzu63RobOMPqKN?autoplay=1&mute=1"
+  },
+  {
+    url: "https://www.youtube.com/embed/uFGAaTPgNNE?si=1q9vIfwbVnPdYmei?autoplay=1&mute=1"
+  },
+  {
+    url: "https://www.youtube.com/embed/MFhjI3urKis?si=U5yEgAv0eJVmQFLc?autoplay=1&mute=1"
+  },
+  {
+    url: "https://www.youtube.com/embed/Hgw4S7SDo3U?si=3RlVp701jJ0hHfnF?autoplay=1&mute=1"
+  },
+  {
+    url: "https://www.youtube.com/embed/Gzi7AgztLsM?si=mrS2KZxfbXnJt3BA?autoplay=1&mute=1"
+  }
+];
+
 export const HomePage: React.FC<HomePageProps> = ({ onPageChange }) => {
   const { user } = useAuth();
+const [isPaused, setIsPaused] = useState(false); 
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+ useEffect(() => {
+    if (!isPaused) {
+      timerRef.current = setInterval(() => {
+        setCurrentIndex((prevIndex) => (prevIndex + 1) % videoSlides.length);
+      }, 5000); 
+    }
+
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+    };
+  }, [isPaused, videoSlides.length]);
+
+  const goToPrevious = () => {
+    setCurrentIndex((prevIndex) =>
+      prevIndex === 0 ? videoSlides.length - 1 : prevIndex - 1
+    );
+  };
+
+  const goToNext = () => {
+    setCurrentIndex((prevIndex) => (prevIndex + 1) % videoSlides.length);
+  };
+
+  const handleMouseEnter = () => setIsPaused(true);
+  const handleMouseLeave = () => setIsPaused(false);
+
+  const handleVideoInteraction = () => {
+    setIsPaused(true); 
+  };
+
   const features = [
     {
       icon: Users,
@@ -38,41 +97,67 @@ export const HomePage: React.FC<HomePageProps> = ({ onPageChange }) => {
 
   return (
     <div className="min-h-screen bg-gray-900">
-      
-<div className="mx-auto my-8 max-w-4xl">
-  <h2 className="text-3xl md:text-4xl font-bold text-center text-white mb-4">
-    What's New in Film World
-  </h2>
-  <p className="text-gray-400 text-center mb-8 text-lg">
-    Fresh Updates, Hot Teasers & Breaking News
-  </p>
-  
-  <div className="relative bg-gray-800 rounded-2xl overflow-hidden shadow-2xl">
-    <div className="aspect-video">
-      <iframe 
-        width="100%" 
-        height="100%" 
-        src="https://www.youtube.com/embed/-yXCPQGrMIc?si=BHFCMoMX0qkAryGN&autoplay=1&mute=1" 
-        title="YouTube video player" 
-        frameBorder="0" 
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-        referrerPolicy="strict-origin-when-cross-origin" 
-        allowFullScreen
-        className="w-full h-full"
-      />
-    </div>
-    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-6">
-      <h5 className="text-xl font-bold text-white mb-2">New Teaser</h5>
-      <p className="text-gray-200">Watch the latest official trailers and sneak peeks of upcoming blockbusters.</p>
-    </div>
-  </div>
-</div>
+      {/* What's New Section with Video Carousel */}
+      <div className="mx-auto my-8 max-w-4xl">
+        <h2 className="text-3xl md:text-4xl font-bold text-center text-white mb-4">
+          What's New in Film World
+        </h2>
+        <p className="text-gray-400 text-center mb-8 text-lg">
+          Fresh Updates, Hot Teasers & Breaking News
+        </p>
+
+         <div
+          className="relative"
+          onMouseEnter={handleMouseEnter} 
+          onMouseLeave={handleMouseLeave} 
+        >
+          <div className="relative bg-gray-800 rounded-2xl overflow-hidden shadow-2xl">
+            <div className="aspect-video">
+              <iframe
+                width="100%"
+                height="100%"
+                src={`${videoSlides[currentIndex].url}&enablejsapi=1`}
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerPolicy="strict-origin-when-cross-origin"
+                allowFullScreen
+                className="w-full h-full"
+                onClick={handleVideoInteraction} 
+              />
+            </div>
+          </div>
+          <button
+            onClick={goToPrevious}
+            className="absolute top-1/2 left-3 transform -translate-y-1/2 bg-black/50 p-3 rounded-full text-white hover:bg-black/70 transition"
+          >
+            <ChevronLeft className="w-6 h-6" />
+          </button>
+
+          <button
+            onClick={goToNext}
+            className="absolute top-1/2 right-3 transform -translate-y-1/2 bg-black/50 p-3 rounded-full text-white hover:bg-black/70 transition"
+          >
+            <ChevronRight className="w-6 h-6" />
+          </button>
+
+          <div className="flex justify-center mt-4 space-x-2">
+            {videoSlides.map((_, index) => (
+              <div
+                key={index}
+                onClick={() => setCurrentIndex(index)}
+                className={`w-3 h-3 rounded-full cursor-pointer transition ${
+                  index === currentIndex ? "bg-white" : "bg-gray-500"
+                }`}
+              ></div>
+            ))}
+          </div>
+        </div>
+      </div>
 
 
-      {/* Hero Section */}
       <section className="relative bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 py-20 overflow-hidden">
         <div className="absolute inset-0 bg-black opacity-50"></div>
-        <div 
+        <div
           className="absolute inset-0 opacity-10"
           style={{
             backgroundImage: 'url("https://images.pexels.com/photos/274937/pexels-photo-274937.jpeg")',
@@ -81,7 +166,6 @@ export const HomePage: React.FC<HomePageProps> = ({ onPageChange }) => {
           }}
         ></div>
 
-        
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 leading-tight">
             Your Film Career
@@ -121,6 +205,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onPageChange }) => {
           )}
         </div>
       </section>
+
       {/* Role Categories */}
       <section className="py-16 bg-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -184,7 +269,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onPageChange }) => {
         </div>
       </section>
 
-      {/* Footer / CTA Section */}
+      {/* Footer or CTA */}
       {!user ? (
         <section className="py-20 bg-gradient-to-r from-yellow-400 to-orange-400">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -227,7 +312,9 @@ export const HomePage: React.FC<HomePageProps> = ({ onPageChange }) => {
                 </div>
                 <div className="flex items-center gap-2">
                   <Phone className="h-5 w-5 text-yellow-400" />
-                  <a href="tel:+917671801206" className="hover:text-white transition-colors">+91 76718 01206</a>
+                  <a href="tel:+917671801206" className="hover:text-white transition-colors">
+                    +91 76718 01206
+                  </a>
                 </div>
               </div>
             </div>

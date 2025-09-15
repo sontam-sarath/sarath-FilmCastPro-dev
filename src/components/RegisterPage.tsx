@@ -3,7 +3,7 @@ import { User, Mail, Lock, Camera, MapPin } from 'lucide-react';
 import { filmRoles } from '../data/pricing';
 import { FilmRole, PricingPlan } from '../types';
 import { useAuth } from '../context/AuthContext';
-
+import { ProfileData } from './UserProfile';
 interface RegisterPageProps {
   onPageChange: (page: string) => void;
 }
@@ -48,6 +48,7 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({ onPageChange }) => {
       }
       return;
     }
+    console.log(result);
     onPageChange('dashboard');
   };
 

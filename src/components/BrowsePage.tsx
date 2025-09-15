@@ -1,82 +1,18 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Search, Filter, MapPin, Star, Eye } from 'lucide-react';
 import { filmRoles } from '../data/pricing';
+import { supabase } from '../lib/supabaseClient';
 
 interface BrowsePageProps {
   onPageChange: (page: string) => void;
 }
 
-// Mock data for demonstration
-const mockProfiles = [
-  {
-    id: '1',
-    name: 'Sarah Johnson',
-    role: 'Director',
-    location: 'Los Angeles, CA',
-    rating: 4.9,
-    projects: 23,
-    image: 'https://images.pexels.com/photos/3584848/pexels-photo-3584848.jpeg?w=300&h=300&fit=crop',
-    bio: 'Award-winning director with 10+ years of experience in feature films and documentaries.',
-    plan: 'gold'
-  },
-  {
-    id: '2',
-    name: 'Michael Chen',
-    role: 'Cameraman',
-    location: 'New York, NY',
-    rating: 4.8,
-    projects: 45,
-    image: 'https://images.pexels.com/photos/3785077/pexels-photo-3785077.jpeg?w=300&h=300&fit=crop',
-    bio: 'Professional cinematographer specializing in narrative and commercial work.',
-    plan: 'silver'
-  },
-  {
-    id: '3',
-    name: 'Emma Rodriguez',
-    role: 'Musician',
-    location: 'Nashville, TN',
-    rating: 4.7,
-    projects: 67,
-    image: 'https://images.pexels.com/photos/3779448/pexels-photo-3779448.jpeg?w=300&h=300&fit=crop',
-    bio: 'Film score composer and sound designer with expertise in orchestral and electronic music.',
-    plan: 'gold'
-  },
-  {
-    id: '4',
-    name: 'James Wilson',
-    role: 'VFX Artist',
-    location: 'Vancouver, BC',
-    rating: 4.9,
-    projects: 34,
-    image: 'https://images.pexels.com/photos/3851213/pexels-photo-3851213.jpeg?w=300&h=300&fit=crop',
-    bio: 'Senior VFX artist with experience in blockbuster films and streaming series.',
-    plan: 'silver'
-  },
-  {
-    id: '5',
-    name: 'Lisa Park',
-    role: 'Costume Designer',
-    location: 'Atlanta, GA',
-    rating: 4.6,
-    projects: 28,
-    image: 'https://images.pexels.com/photos/3811011/pexels-photo-3811011.jpeg?w=300&h=300&fit=crop',
-    bio: 'Creative costume designer with a passion for period pieces and contemporary fashion.',
-    plan: 'free'
-  },
-  {
-    id: '6',
-    name: 'David Kumar',
-    role: 'Producer',
-    location: 'Mumbai, India',
-    rating: 4.8,
-    projects: 15,
-    image: 'https://images.pexels.com/photos/3823495/pexels-photo-3823495.jpeg?w=300&h=300&fit=crop',
-    bio: 'Independent film producer focused on meaningful stories and emerging talent.',
-    plan: 'gold'
-  }
-];
+
+
+
 
 export const BrowsePage: React.FC<BrowsePageProps> = ({ onPageChange }) => {
+  const [mockProfiles,setmockProfiles] = useState<any[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedRole, setSelectedRole] = useState('');
   const [selectedLocation, setSelectedLocation] = useState('');
@@ -98,6 +34,17 @@ export const BrowsePage: React.FC<BrowsePageProps> = ({ onPageChange }) => {
       default: return 'bg-gray-600 text-white';
     }
   };
+  const getUserData = async()=>{
+  const {data,error} = await supabase.from('profiles').select("*");
+  setmockProfiles(data ?? []);
+  if(error){
+    console.log(error);
+  };
+
+}
+  useEffect(()=>{
+    getUserData();
+  },[])
 
   return (
     <div className="min-h-screen bg-gray-900 py-8">
