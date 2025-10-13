@@ -46,7 +46,7 @@ export const RegisterPage: React.FC = () => {
       return;
     }
     console.log(result);
-    navigate('dashboard');
+    navigate('/dashboard');
   };
 
   const nextStep = () => {
@@ -254,6 +254,7 @@ export const RegisterPage: React.FC = () => {
                   type="button"
                   onClick={nextStep}
                   className="ml-auto px-6 py-3 bg-yellow-400 text-gray-900 rounded-lg hover:bg-yellow-300 transition-colors font-semibold"
+
                 >
                   Continue
                 </button>
