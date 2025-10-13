@@ -354,9 +354,9 @@ return (
         </div>
         <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between">
           <div className="mt-16 sm:mt-0 sm:ml-40 flex-grow">
-            <h1 className="text-3xl font-bold text-white">{ProfileData.name || "Eleanor Vance"}</h1>
-            <p className="text-yellow-400 text-lg">{ProfileData.role || "Director of Photography"}</p>
-            <p className="text-gray-400 text-sm">{ProfileData.location || "Crafting visual narratives with light and shadow."}</p>
+            <h1 className="text-3xl font-bold text-white">{ProfileData.name || ""}</h1>
+            <p className="text-yellow-400 text-lg">{ProfileData.role || ""}</p>
+            <p className="text-gray-400 text-sm">{ProfileData.location || ""}</p>
           </div>
           <div className="mt-4 sm:mt-0 flex items-center gap-4 text-sm whitespace-nowrap">
             <div className="text-center">
@@ -377,7 +377,7 @@ return (
     <div className="mt-8 bg-gray-800 p-6 rounded-lg shadow-lg">
       <h3 className="text-white text-xl font-bold mb-3">About Me</h3>
       <p className="text-gray-300 text-base">
-        {ProfileData.bio || "Eleanor is an award-winning Director of Photography with over 15 years of experience..."}
+        {ProfileData.bio || "No bio available."}
       </p>
     </div>
 
