@@ -2,8 +2,6 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { Session, User } from '@supabase/supabase-js';
 import { supabase } from '../lib/supabaseClient';
 
-const siteUrl = import.meta.env.VITE_SITE_URL || window.location.origin;
-
 interface AuthContextValue {
   user: User | null;
   session: Session | null;
@@ -99,7 +97,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const { data,error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: siteUrl,
+
+        redirectTo: 
+        import.meta.env.MODE === 'development'
+          ? 'http://localhost:5173/'
+          : 'https://filmcastpro-uat.netlify.app/',
       },
     });
     console.log(data);
@@ -108,7 +110,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   return (
-    <AuthContext.Provider value={{ user, session, signIn, signUp, signOut, signInWithGoogle }}>
+    <AuthContext.Provider value={{ user, session, signIn, signUp, signOut, signInWithGoogle}}>
       {children}
     </AuthContext.Provider>
   );

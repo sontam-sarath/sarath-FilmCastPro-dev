@@ -1,43 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Search, Filter, MapPin, Star, Eye } from 'lucide-react';
-import { filmRoles } from '../data/pricing';
+import { filmRoles,getSignedUrl,Profile } from '../data/pricing';
 import { supabase } from '../lib/supabaseClient';
 import { useNavigate } from 'react-router-dom';
 
 
-type Experience = {
-  company: string;
-  role: string;
-  duration: string;
-  description: string;
-};
-export interface Profile {  
-  id: string | null; 
-  name: string | null;            
-  bio: string | null;             
-  location: string | null;       
-  plan: 'free' | 'silver' | 'gold' | string | null; 
-  role: string | null;
-  coverPhoto: string | null;     
-  profilePhoto: string | null; 
-  experience : Experience[] | null 
-  rating : number |  null;  
-  signedProfilePhoto : string | null
-  signedCoverPhoto : string | null
-}
 
-export const getSignedURL=async(path:string | null)=>{
-    if(!path){
-      return null
-    }
-      const { data, error } = await supabase.storage.from('profile-photos').createSignedUrl(path,3600);
-
-    if(error){
-      console.log(error);
-      return null;
-    }
-    return data?.signedUrl ?? null;
-  } 
 
 export const BrowsePage: React.FC = () => {
   const navigate = useNavigate();
@@ -83,8 +51,8 @@ const order: Record<plan, number> = {
   }
   const profileswithSignedUrls: Profile[] = await Promise.all(
     profilesArray.map(async(profile:Profile)=>{
-      const signedPhotoURL = await getSignedURL(profile.profilePhoto);
-      const signedCoverURL = await getSignedURL(profile.coverPhoto);
+      const signedPhotoURL = profile.profilePhoto? await getSignedUrl("profile-photos",profile.profilePhoto): null;
+      const signedCoverURL =profile.coverPhoto? await getSignedUrl("cover-photos",profile.coverPhoto):null;
       return {...profile, signedProfilePhoto:signedPhotoURL,
         signedCoverPhoto : signedCoverURL
       }
@@ -180,19 +148,9 @@ const order: Record<plan, number> = {
               key={profile.id}
               className="bg-gray-800 rounded-xl overflow-hidden hover:bg-gray-750 transition-all transform hover:scale-105 cursor-pointer"
             >
-              {/* <div className="relative">
-                <img
-                  src={profile.profilePhoto ?? ""}
-                  alt={profile.name ?? ""}
-                  className="w-full h-48 object-contain bg-gray-200 rounded"
-                />
-                <div className={`absolute top-4 right-4 px-2 py-1 rounded-full text-xs font-semibold ${getPlanBadgeColor(profile.plan ?? "")}`}>
-                  {profile.plan?.toUpperCase()}
-                </div>
-              </div> */}
             <div className="relative w-full aspect-[16/9] bg-gray-200 rounded-t-lg overflow-hidden">
               <img
-                src={profile.signedProfilePhoto ?? ""}
+                src={profile.signedProfilePhoto || profile.profilePhoto || ""}
                 alt={profile.name ?? ""}
                 className="w-full h-full object-cover"
               />
@@ -235,7 +193,9 @@ const order: Record<plan, number> = {
                     <span className="text-sm">{profile.experience?.length} projects</span>
                   </div>
                   <button className="bg-yellow-400 text-gray-900 px-4 py-2 rounded-lg text-sm font-semibold hover:bg-yellow-300 transition-colors" onClick={()=>{
-                    navigate(`/profile/${profile.id}`);
+                    navigate(`/profile/${profile.id}`,{
+                      state: { ProfileData: profile }
+                    });
                   }} >
                     View Profile
                   </button>

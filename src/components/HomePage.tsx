@@ -7,8 +7,7 @@ import {
 import { useAuth } from '../context/AuthContext';
 import '../HomePage.css';
 import { useNavigate } from 'react-router-dom';
-import {filmRoles} from '../data/pricing';
-const roles = filmRoles.slice(0,-1);
+import {roles} from '../data/pricing';
 
 const videoSlides = [
   {
@@ -206,27 +205,36 @@ const [isPaused, setIsPaused] = useState(false);
       </section>
 
       {/* Role Categories */}
-      <section className="py-16 bg-gray-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl md:text-4xl font-bold text-center text-white mb-4">
-            For Every Film Professional
-          </h2>
-          <p className="text-gray-400 text-center mb-12 text-lg">
-            Whether you're in front of or behind the camera, we have a place for you
-          </p>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {roles.map((role, index) => (
-              <div 
-                key={index}
-                className="bg-gray-700 hover:bg-gray-600 p-4 rounded-lg text-center transition-all cursor-pointer transform hover:scale-105"
-                onClick={() => nagivate('register')}
-              >
-                <span className="text-white font-medium">{role}</span>
-              </div>
-            ))}
-          </div>
+<section className="py-16 bg-gray-800">
+  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <h2 className="text-3xl md:text-4xl font-bold text-center text-white mb-4">
+      For Every Film Professional
+    </h2>
+    <p className="text-gray-400 text-center mb-12 text-lg">
+      Whether you're in front of or behind the camera, we have a place for you
+    </p>
+    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+      {roles.map((role, index) => (
+        <div
+          key={index}
+          className={`
+            p-4 rounded-lg text-center transition-all cursor-pointer transform hover:scale-105
+            ${
+              role.highlighted
+                ? 
+                  'bg-gradient-to-br from-yellow-400 to-orange-500 hover:from-yellow-300 hover:to-orange-400 shadow-lg shadow-yellow-500/50'
+                : 
+                  'bg-gray-700 hover:bg-gray-600'
+            }
+          `}
+          onClick={() => nagivate('register')}
+        >
+          <span className="text-white font-medium">{role.name}</span>
         </div>
-      </section>
+      ))}
+    </div>
+  </div>
+</section>
 
       {/* Features Section */}
       <section className="py-20 bg-gray-900">

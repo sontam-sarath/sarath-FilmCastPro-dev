@@ -3,8 +3,8 @@ import { Film, Menu, X, Search } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { supabase } from '../lib/supabaseClient';
 import { useNavigate, useLocation } from 'react-router-dom';
-import {getSignedURL,Profile} from './BrowsePage';
-
+import {Profile} from './BrowsePage';
+import { getSignedUrl } from '../data/pricing';
 
 
 export const Header: React.FC = () => {
@@ -14,34 +14,41 @@ export const Header: React.FC = () => {
   const { user, signOut } = useAuth();
   const [profile, setProfile] = useState<Profile | null>(null);
 
- const getData = async () => {
-  if (!user) return; 
+  const getData = async () => {
+    if (!user) return;
 
-  const { data, error } = await supabase
-    .from('profiles')
-    .select('*')
-    .eq('user_id', user.id).single();
-    console.log(data);
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('user_id', user.id)
+      .single();
 
-  if (error) {
-    console.error('Error fetching user data:', error);
-    return;
-  } else {
-    if(data && (data.profilePhoto || data.coverPhoto)){
-      const signedProfilePhotoURL = await getSignedURL(data.profilePhoto);
-      const signedCoverPhotoURL = await getSignedURL(data.coverPhoto);
-      const finalProfileData = {
-        ...data,
-        signedProfilePhoto:signedProfilePhotoURL,
-        signedCoverPhoto:signedCoverPhotoURL
-      }
-      console.log('User data:', data);
-      setProfile(finalProfileData);
-
+    if (error) {
+      console.error('Error fetching user data:', error);
+      return;
     }
-  }
-};
- 
+
+    if (!data) return;
+
+    // Generate signed URLs if available
+    const signedProfilePhotoURL = data.profilePhoto 
+      ? await getSignedUrl('profile-photos',data.profilePhoto) 
+      : null;
+
+    const signedCoverPhotoURL = data.coverPhoto 
+      ? await getSignedUrl('cover-photos',data.coverPhoto) 
+      : null;
+
+    const finalProfileData: Profile = {
+      ...data,
+      signedProfilePhoto: signedProfilePhotoURL,
+      signedCoverPhoto: signedCoverPhotoURL,
+    };
+
+    console.log('Final user data with signed URLs:', finalProfileData);
+    setProfile(finalProfileData);
+  };
+
 
   const navItems = [
     { id: '/', label: 'Home' },

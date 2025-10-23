@@ -1,4 +1,5 @@
 import { PricingTier } from '../types';
+import { supabase } from '../lib/supabaseClient';
 
 export const pricingTiers: PricingTier[] = [
   {
@@ -62,5 +63,121 @@ export const filmRoles = [
   'Makeup Artist',
   'Infrastructure Provider',
   'Script Writer',
-  'Other'
 ] as const;
+
+export const  roles = [
+  { name: 'Producer', highlighted: true },
+  { name: 'Director', highlighted: false },
+  { name: 'Musician', highlighted: false },
+  { name: 'Hero', highlighted: false },
+  { name: 'Heroine', highlighted: false },
+  { name: 'Character Artist', highlighted: true },
+  { name: 'Lighting Technician', highlighted: false },
+  { name: 'Transportation', highlighted: false },
+  { name: 'Catering', highlighted: false },
+  { name: 'VFX Artist', highlighted: false },
+  { name: 'Cameraman', highlighted: true },
+  { name: 'Costume Designer', highlighted: false },
+  { name: 'Acting Trainer', highlighted: false },
+  { name: 'Makeup Artist', highlighted: false },
+  { name: 'Infrastructure Provider', highlighted: false },
+  { name: 'Script Writer', highlighted: true },
+];
+
+export type Experience = {
+  company: string;
+  role: string;
+  duration: string;
+  description: string;
+  startDate?: string;
+  endDate?: string;
+  currentlyWorking?: boolean;
+};
+
+export type Education = {
+  institute: string;
+  course: string;
+  duration: string;
+  description: string;
+};
+
+export type skills = string[];
+export interface Profile {  
+
+    headline?: string | null;
+    education: Education[];
+    email:string | null;
+    gender:string | null;
+    phone:string | null;
+    dob:string | null;
+    socialLink: string| null;
+    instagram: string | null;
+    id: string | null; 
+    name: string | null;            
+    bio: string | null;             
+    location: string | null;       
+    plan: 'free' | 'silver' | 'gold' | string | null; 
+    role: string | null;
+    coverPhoto: string | null;     
+    profilePhoto: string | null; 
+    experience : Experience[] ; 
+    rating : number |  null;  
+    signedProfilePhoto : string | null
+    signedCoverPhoto : string | null
+    skills: string[];
+}
+
+ export type ProfileData = {
+  name: string;
+  role: string;
+  location: string;
+  bio: string;
+  headline?: string;
+  coverPhoto: string |null;
+  profilePhoto: string | null;
+  experience: Experience[];
+  skills: string[];
+  education: Education[];
+  plan: string;
+  email:string;
+  gender:string;
+  phone:string;
+  dob:string;
+  socialLink: string;
+  instagram: string;
+};
+
+export const DEFAULT_COVER_PHOTO = 'https://https://wallpapers.com/images/hd/minimalist-simple-linkedin-background-inmeafna599ltxxm.jpg.com/default-cover-photo.jpg';
+export const DEFAULT_PROFILE_PHOTO = 'https://example.com/https://www.pngitem.com/pimgs/m/504-5040528_empty-profile-picture-png-transparent-png.png-profile-photo.jpg';
+
+ export const checkSession = async ()=>{
+    const {data} = await supabase.auth.getSession();
+    if (data?.session) {
+    const userId = data.session.user.id;
+    const userName = data.session.user.identities?.[0]?.identity_data?.name || "";
+    
+    console.log("User ID:", userId);
+    console.log("User Name:", userName);
+
+    return [userId, userName];
+    }
+    else{
+      console.log("No active session is there");
+    }
+  }
+
+export const getSignedUrl = async (bucketName: string, filePath: string) => {
+  if (!filePath) return null;
+
+  const { data, error } = await supabase.storage
+    .from(bucketName)
+    .createSignedUrl(filePath, 60 * 60); // 1 hour valid
+
+  if (error) {
+    console.error("Error generating signed URL:", error.message);
+    return null;
+  }
+  console.log("Signed URL data:", data);
+
+  return data?.signedUrl || null;
+};
